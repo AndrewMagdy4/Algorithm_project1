@@ -1,0 +1,84 @@
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
+
+class SeparateChainingHashTable:
+    def __init__(self, size):
+        self.size = size
+        self.hash_table = [None] * size
+
+    def hash_function(self, key):
+        x =  hash(key) % self.size
+        return x
+
+    def display_hash(self):
+        for i in range(self.size):
+            print(i, end=" ")
+
+            current = self.hash_table[i]
+            while current:
+                print("-->", end=" ")
+                print(f"({current.key}, {current.value})", end=" ")
+                current = current.next
+            print()
+
+    def insert(self, key, value):
+        index = self.hash_function(key)
+        if self.hash_table[index] is None:
+            self.hash_table[index] = Node(key, value)
+        else:
+            current = self.hash_table[index]
+            while current.next:
+                current = current.next
+            current.next = Node(key, value)
+
+    def search(self, key):
+        index = self.hash_function(key)
+        current = self.hash_table[index]
+        while current:
+            if current.key == key:
+                return current.value
+            current = current.next
+        return None
+
+    def delete(self, key):
+        index = self.hash_function(key)
+        current = self.hash_table[index]
+        prev = None
+        while current:
+            if current.key == key:
+                if prev:
+                    prev.next = current.next
+                else:
+                    self.hash_table[index] = current.next
+                return True
+            prev = current
+            current = current.next
+        return False
+
+# create hash table with size 10
+hash_table = SeparateChainingHashTable(10)
+
+# Displaying the initial hash table
+print("Initial Hash Table:")
+
+# insert values into the hash table
+hash_table.insert('Cairo', 10)
+hash_table.insert('Alexandria', 25)
+hash_table.insert('Aswan', 20)
+hash_table.insert('Suez', 9)
+hash_table.insert('Luxor', 21)
+hash_table.insert('Fayoum', 21)
+hash_table.display_hash()
+
+
+hash_table.delete('Alexandria')
+print(" Hash Table after delete :")
+hash_table.display_hash()
+
+
+
+print("the value of the key we searched for:")
+print(hash_table.search('Cairo'))
